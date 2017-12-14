@@ -25,7 +25,7 @@ class FooglebolgSpider(scrapy.Spider):
             yield scrapy.Request(url=url,callback=self.parse)
 
     def parse(self, response):
-        item1=ThreatcollectItem()
+        # item1=ThreatcollectItem()
         for i in response.xpath('//*[@id="Blog1"]/div[@class="post"]'):
             itemloderArticle=ItemLoader(item=ThreatcollectItem(),selector=i)
             itemloderArticle.add_xpath('title','.//h2/a/text()',lambda x:'some' if not x else x)
@@ -36,12 +36,14 @@ class FooglebolgSpider(scrapy.Spider):
             itemloderArticle.add_value('img_urls',i.re(r'src="(.*?)"'))
             itemloderArticle.add_value('spider_time',time.time()*1000)
             itemloderArticle.add_value('publisher_id',None)
-            itemloderArticle.add_value()
+            # itemloderArticle.add_value()
 
             # print(itemloderArticle.selector.re(r'src=".*?"'))
             # itemloderArticle.add_xpath('content','')
             # print(i.xpath('.//h2/a/text()').extract_first('nothing').strip())
             item1=itemloderArticle.load_item()
+            yield item1
             print(dict(item1))
         print(response.url)
         print(response)
+        # return item1

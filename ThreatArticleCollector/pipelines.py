@@ -9,3 +9,10 @@
 class ThreatarticlecollectorPipeline(object):
     def process_item(self, item, spider):
         return item
+        print(dict(item))
+
+class setDefaultValue(object):
+    def process_item(self,item,spider):
+        for field in item.fields:
+            item.setdefault(field,None)
+        return item
