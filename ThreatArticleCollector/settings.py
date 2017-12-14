@@ -65,8 +65,10 @@ ROBOTSTXT_OBEY = False
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'ThreatArticleCollector.pipelines.ThreatarticlecollectorPipeline': 300,
-    'ThreatArticleCollector.pipelines.setDefaultValue': 50,
+   # 'ThreatArticleCollector.pipelines.ThreatarticlecollectorPipeline': 300,
+    'ThreatArticleCollector.pipelines.setDefaultValue': 51,
+    'ThreatArticleCollector.pipelines.MyImagesPipeline':52,
+    'ThreatArticleCollector.pipelines.ThreatcollectPipeline':53
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
