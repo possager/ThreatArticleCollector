@@ -25,17 +25,26 @@ class FooglebolgSpider(scrapy.Spider):
             yield scrapy.Request(url=url,callback=self.parse)
 
     def parse(self, response):
-        # item1=ThreatcollectItem()
+        def deal_img_urls(data):
+            print(data)
+            return 'has dealed somethings'
+
+        def deal_img_urls2(data2):
+            print(data2)
+            return data2+' add by deal2'
+
+
+
         for i in response.xpath('//*[@id="Blog1"]/div[@class="post"]'):
             itemloderArticle=ItemLoader(item=ThreatcollectItem(),selector=i)
-            itemloderArticle.add_xpath('title','.//h2/a/text()',lambda x:'some' if not x else x)
+            itemloderArticle.add_xpath('title','.//h2/a/text()')
             itemloderArticle.add_xpath('url','.//h2/a/@href')
             itemloderArticle.add_xpath('publish_time','.//div[@class="post-header"]/div[@class="published"]/span/text()',Join())
             itemloderArticle.add_xpath('publisher','.//div[@class="post-body"]/div[contains(@class,"post-content")]/script/text()',MapCompose(remove_tags))
             itemloderArticle.add_xpath('article_id','.//@data-id')
-            itemloderArticle.add_value('img_urls',i.re(r'src="(.*?)"'))
+            itemloderArticle.add_value('img_urls',i.re(r'src="(.*?)"'),deal_img_urls,deal_img_urls2)
             itemloderArticle.add_value('spider_time',time.time()*1000)
-            itemloderArticle.add_value('publisher_id',None)
+            # itemloderArticle.add_value('publisher_id',None)
             # itemloderArticle.add_value()
 
             # print(itemloderArticle.selector.re(r'src=".*?"'))
@@ -46,4 +55,9 @@ class FooglebolgSpider(scrapy.Spider):
             print(dict(item1))
         print(response.url)
         print(response)
+        nexturl=response.xpath('//*[@id="Blog1_blog-pager-older-link"]/@href').extract()
+        yield scrapy.Request(url=nexturl[0],headers=response.headers)
+
+        print('it is href   ',nexturl)
         # return item1
+
