@@ -32,8 +32,8 @@ def write_orig_html(item, spider, path):
         fhtml = open(str_md5(item['url']) + '.html', 'w')
         print str_md5(item['url'])
         if is_str(item['html']):
-            # fhtml.write(item['html'].encode('utf-8'))
-            fhtml.write(item['html'].encode('utf-8','ignore'))
+            fhtml.write(item['html'].encode('utf-8'))
+            # fhtml.write(item['html'])
         fhtml.close()
         f = zipfile.ZipFile(path + '/' + str_md5(item['url']) + '.zip', 'w', zipfile.ZIP_DEFLATED)
         if item['img_urls'] and item['image_paths']:
@@ -93,11 +93,6 @@ class MyImagesPipeline(ImagesPipeline):
     def file_path(self, request, response=None, info=None):
         image_guid = request.url.split('/')[-1]
         return 'full/%s' % (image_guid)
-
-
-
-
-
 
 class setDefaultValue(object):
     def process_item(self,item,spider):

@@ -18,7 +18,7 @@ class ThreatarticlecollectorSpiderMiddleware(object):
         # This method is used by Scrapy to create your spiders.
         s = cls()
         crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
-        crawler.signals.connect(s.deal_item_drop,signal=signals.item_dropped)
+        # crawler.signals.connect(s.deal_item_drop,signal=signals.item_dropped)
         return s
 
     def process_spider_input(self, response, spider):

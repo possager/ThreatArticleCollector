@@ -1,7 +1,8 @@
 #_*_coding:utf-8_*_
 import scrapy
 from ThreatArticleCollector.items import ThreatcollectItem
-from scrapy.loader import ItemLoader
+# from scrapy.loader import ItemLoader
+from ThreatArticleCollector.spiders.itemloader_ll import itemloader_ll as ItemLoader
 from scrapy.loader.processors import Compose
 from scrapy.loader.processors import MapCompose
 from scrapy.loader.processors import Join
@@ -27,8 +28,8 @@ class FooglebolgSpider(scrapy.Spider):
             yield scrapy.Request(url=url,callback=self.parse)
 
     def parse(self, response):
-        def deal_publish_time(publish_time_raw):
-            if publish_time_raw:#需要注意这里边可能没有提取到，判断是否是None，以免程序出错。
+        def deal_publish_time(publish_time_raw=None):
+            if publish_time_raw:#需要注意这里边可能没有提取到，如果没有取到，这里其实也有可能不是none，而是没有传入数据，所以要在开头默认赋值
                 mouth_str_dict={
                     'January':'01',
                     'February':'02',
@@ -61,9 +62,9 @@ class FooglebolgSpider(scrapy.Spider):
                 return None
 
         def deal_publisher(html_raw):
-            response_publisher=scrapy.http.HtmlResponse(url='fromJavaScript',body=str(html_raw))
+            response_publisher=scrapy.http.HtmlResponse(url='thisIsJavaScript',body=str(html_raw))
             publish_user=response_publisher.xpath('.//span[@class="byline-author"]/text()').extract_first(default=None)
-            publish_user=str(publish_user).split(',')[0].split('by')[1].split('and')
+            publish_user=publish_user.split(',')[0].split('by')[1].split('and')
 
             print(publish_user)
             return publish_user
@@ -78,13 +79,26 @@ class FooglebolgSpider(scrapy.Spider):
             itemloderArticle.add_value('img_urls',i.re(r'src="(.*?)"'))
             itemloderArticle.add_value('spider_time',time.time()*1000)
             itemloderArticle.add_xpath('publisher','.//div[@class="post-body"]/div[contains(@class,"post-content")]/script/text()',deal_publisher)
-            itemloderArticle.add_value('html',response.body)
+            itemloderArticle.add_value('html',i.extract())
+
+
 
             item1=itemloderArticle.load_item()
             yield item1
-            print(dict(item1))
+            # yield response.follow(url=item1['url'],headers=self.headers,meta={'item':item1},callback=self.parse_item)
 
         nexturl=response.xpath('//*[@id="Blog1_blog-pager-older-link"]/@href').extract()
-        # yield scrapy.Request(url=nexturl[0],headers=response.headers)
+        # yield response.follow(url=nexturl[0],headers=response.headers)
 
-
+    def parse_item(self,response):
+        '''
+        示例而已，这个爬虫用不着这个，可以删除。并且上一个函数的yield也要删除
+        :param response:
+        :return:
+        '''
+        last_item=response.meta['item']
+        itemloader1=ItemLoader(item=last_item)
+        itemloader1.add_value_to_original('article_id','add in parse_item')
+        item2=itemloader1.load_item()
+        print(item2)
+        yield item2

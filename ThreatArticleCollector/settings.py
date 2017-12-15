@@ -67,8 +67,8 @@ ROBOTSTXT_OBEY = False
 ITEM_PIPELINES = {
    # 'ThreatArticleCollector.pipelines.ThreatarticlecollectorPipeline': 300,
     'ThreatArticleCollector.pipelines.setDefaultValue': 51,
-    'ThreatArticleCollector.pipelines.MyImagesPipeline':52,
-    'ThreatArticleCollector.pipelines.ThreatcollectPipeline':53
+    'ThreatArticleCollector.pipelines.MyImagesPipeline':61,
+    'ThreatArticleCollector.pipelines.ThreatcollectPipeline':71
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
